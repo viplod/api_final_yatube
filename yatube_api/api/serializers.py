@@ -33,6 +33,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         fields = ('id', 'user', 'following')
