@@ -1,9 +1,10 @@
 
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
+from rest_framework.validators import UniqueTogetherValidator
 
 
-from posts.models import Comment, Follow, Group, Post
+from posts.models import Comment, Follow, Group, Post, User
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -33,8 +34,29 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username')
+    following = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username',
+        required=True)
+
+    def validate(self, data):
+        user = self.context['request'].user
+        follow = data['following']
+        if user == follow:
+            raise serializers.ValidationError(
+                "Нельзя подписаться на самого себя")
+        return data
 
     class Meta:
         fields = ('id', 'user', 'following')
         model = Follow
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=['user', 'following'],
+                message='Запись уже есть в базе'
+            )
+        ]
