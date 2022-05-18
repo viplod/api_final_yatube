@@ -52,6 +52,3 @@ class Follow(models.Model):
                 name='user_following',
             )
         ]
-
-    # def __str__(self):
-    #     return self.user.username
