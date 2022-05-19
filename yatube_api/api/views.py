@@ -11,8 +11,11 @@ from posts.models import Group, Post
 from .permissions import AuthorOrReadOnly, ReadOnly
 
 
-class ListCreateViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
-                        viewsets.GenericViewSet):
+class ListCreateViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     pass
 
 
